@@ -1,0 +1,85 @@
+---
+// Import helper functions from Astro's content system
+import { getEntryBySlug, getCollection } from 'astro:content';
+
+// Grab the slug from the URL
+const { slug } = Astro.params;
+
+// Find the slug from the recipes collection
+const recipe = await getEntryBySlug('recipes', slug);
+
+// If slug for recipe does not exist, throw an error:
+if (!recipe) {
+  throw new Error(`Recipe not found: ${slug}`);
+}
+
+// recipe.data
+const {
+  title,
+  description,
+  featuredImage,
+  featuredImageDesc,
+  prepTime,
+  cookTime,
+  ingredientsList,
+  instructionsList,
+  nutrition,
+} = recipe.data;
+
+// The above is just a shorthand way of writing:
+// const title = recipe.data.title;
+// const description = recipe.data.description;
+// etc...
+
+// Calculate the total prep time
+const totalTime = prepTime + cookTime;
+---
+
+<article>
+  <header class="post-header">
+    <img 
+        class="post-header__featured-image" 
+        src={featuredImage} 
+        alt={featuredImageDesc} 
+    />
+    <h1 class="post-header__title">{title}</h1>
+    <p class="post-header__description">{description}</p>
+  </header>
+
+  <section class="meta-section">
+    <h2 class="meta-section__heading">Preparation time</h2>
+    <div class="meta-section__content">
+        <dl class="meta-list">
+            <div class="meta-list__item">
+                <dt class="meta-list__term">Preparation:</dt>
+                <dd class="meta-list__data">{prepTime} minutes</dd>
+            </div>
+            <div class="meta-list__item">
+                <dt class="meta-list__term">Cooking:</dt>
+                <dd class="meta-list__data">{cookTime} minutes</dd>
+            </div>
+            <div class="meta-list__item">
+                <dt class="meta-list__term">Total:</dt>
+                <dd class="meta-list__data">{totalTime} minutes</dd>
+            </div>
+        </dl>
+    </div>
+  </section>
+
+  <section class="post-section">
+    <h2 class="post-section__title">Ingredients</h2>
+    <div class="post-section__content">
+        <ul class="post-list">
+            { 
+            ingredientsList.map( (item: string) => (
+                    <li class="post-list__item">{item}</li>
+                ))
+            }   
+        </ul>
+    </div>
+  </section>
+
+  <footer>
+    <!-- Nutrition, tags, or sharing links -->
+  </footer>
+</article>

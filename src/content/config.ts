@@ -9,8 +9,11 @@ const recipes = defineCollection({
         slug: z.string().optional(),
         description: z.string(),
         featuredImage: z.string(),
+        featuredImageDesc: z.string(),
         prepTime: z.number(),
         cookTime: z.number(),
+        ingredientsList: z.array(z.string()),
+        instructionsList: z.array(z.string()),
         nutrition: z.object({
             calories: z.string(),
             carbs: z.string(),
